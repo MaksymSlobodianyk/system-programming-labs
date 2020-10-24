@@ -7,11 +7,11 @@ import {createStore} from "redux";
 import rootReducer from './reducers'
 import Analizator from "./components/Analizator";
 import { composeWithDevTools } from 'redux-devtools-extension';
+import 'semantic-ui-css/semantic.min.css'
 
 const store = createStore(
     rootReducer,
     composeWithDevTools()
-    // other store enhancers if any
 );
 
 ReactDOM.render(

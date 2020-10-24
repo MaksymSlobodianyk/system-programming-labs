@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import analyzerReducer from "./analyzerReducer";
+import analyzerReducer from "./rootReducer";
 
 export default combineReducers({
     analyzerReducer
