@@ -1,5 +1,5 @@
 export const SET_TEXT = 'SET_TEXT'
-export const SET_IS_PROCESSING = 'SET_IS_PROCESSING'
+export const TOGGLE_SHOW_INFO = 'TOGGLE_SHOW_INFO'
 export const SET_TOKENS = 'SET_TOKENS'
 export const SET_SORT_BY = 'SET_SORT_BY'
 
@@ -8,9 +8,8 @@ export const setText = text => ({
     text
 })
 
-export const setIsProcessing = isProcessing => ({
-    type: 'SET_IS_PROCESSING',
-    isProcessing
+export const toggleShowInfo = () => ({
+    type: 'TOGGLE_SHOW_INFO'
 })
 
 export const setSortBy = sortBy => ({
@@ -20,6 +19,6 @@ export const setSortBy = sortBy => ({
 
 export const setTokens = tokens => (
     {
-    type: 'SET_TOKENS',
-    tokens
-})
+        type: 'SET_TOKENS',
+        tokens
+    })

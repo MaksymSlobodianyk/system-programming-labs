@@ -1,7 +1,7 @@
-import {SET_IS_PROCESSING, SET_SORT_BY, SET_TEXT, SET_TOKENS} from "../actions";
+import {TOGGLE_SHOW_INFO, SET_SORT_BY, SET_TEXT, SET_TOKENS} from "../actions";
 
 const initialState = {
-    isProcessing: false,
+    showInfo: true,
     tokens: [],
     text: '',
     sortBy: undefined,
@@ -12,11 +12,13 @@ const analyzerReducer = (state = initialState, action) => {
         case SET_TEXT:
             return {
                 ...state,
-            text: action.text}
-        case SET_IS_PROCESSING:
+                text: action.text
+            }
+        case TOGGLE_SHOW_INFO:
             return {
                 ...state,
-                isProcessing: action.isProcessing}
+                showInfo: !state.showInfo
+            }
         case SET_TOKENS:
             return {
                 ...state,
