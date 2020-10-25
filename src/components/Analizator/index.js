@@ -159,8 +159,12 @@ const Analizator = ({
                         Дата
                     </Label></div>
                 <div className={'sort-tag'} style={sortBy === 'email' ? {borderBottomStyle: 'solid'} : {}}>
-                    <Label as='a' color='pink' tag onClick={() => setSortBy('email')}>
+                    <Label as='a' color='yellow' tag onClick={() => setSortBy('email')}>
                         E-mail
+                    </Label></div>
+                <div className={'sort-tag'} style={sortBy === 'tel' ? {borderBottomStyle: 'solid'} : {}}>
+                    <Label as='a' color='pink' tag onClick={() => setSortBy('tel')}>
+                        Номер телефону
                     </Label></div>
                 <div className={'sort-tag'} style={sortBy === 'numeric' ? {borderBottomStyle: 'solid'} : {}}>
                     <Label as='a' color='orange' tag onClick={() => setSortBy('numeric')}>
