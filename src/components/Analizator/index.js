@@ -19,16 +19,29 @@ const Analizator = ({
                         setSortBy
                     }) => {
 
+    const mockData = `Слободяник Максим, 
+
+Маю 29 років!
+Народився: 27/09/2020.
+
+
+Особиста пошта:       madianyk@gmailcom;
+Корпоративна пошта:       ma.dianyk@ukma.edu.ua;
+
+
+Особистий номер: 077-345-15-65.
+`
+
     const getContent = () => {
         if (tokens.length !== 0) {
             if (sortBy) {
                 return tokens.filter(token => token.type === sortBy).map(token => (
-                        <Token token={token}/>
+                        <Token token={token}  setSortBy={setSortBy}/>
                     )
                 )
             }
             return tokens.map(token => (
-                    <Token token={token}/>
+                    <Token token={token} setSortBy={setSortBy}/>
                 )
             )
         }
@@ -55,32 +68,37 @@ const Analizator = ({
                         <Label as='a' color='green' tag onClick={() => setSortBy('valid')}>
                             Валідні
                         </Label>
-                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що cкладаються з символів ['c', 'л', 'о', 'б',
+                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що cкладаються з символів ['c',
+                            'л', 'о', 'б',
                             'д', 'я', 'н', 'и', 'к'] </p>
                     </div>
                     <div className={'info-row'}>
                         <Label as='a' color='blue' tag onClick={() => setSortBy('date')}>
                             Дата
                         </Label>
-                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що є датою у форматі dd/mm/yyyy</p>
+                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що є датою у форматі
+                            dd/mm/yyyy</p>
                     </div>
                     <div className={'info-row'}>
                         <Label as='a' color='yellow' tag onClick={() => setSortBy('email')}>
                             E-mail
                         </Label>
-                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що є валідними адресами електронних скриньок</p>
+                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що є валідними адресами
+                            електронних скриньок</p>
                     </div>
                     <div className={'info-row'}>
                         <Label as='a' color='pink' tag onClick={() => setSortBy('numeric')}>
                             Номер телефону
                         </Label>
-                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що є номерами телефонів у форматі 999-999-99-99</p>
+                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що є номерами телефонів у форматі
+                            999-999-99-99</p>
                     </div>
                     <div className={'info-row'}>
                         <Label as='a' color='orange' tag onClick={() => setSortBy('numeric')}>
                             Число
                         </Label>
-                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що є числами типу   +123,   -123,   123,   +12.4,   -12.4,   12.4</p>
+                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що є числами типу +123, -123,
+                            123, +12.4, -12.4, 12.4</p>
                     </div>
                     <div className={'info-row'}>
                         <Label as='a' color='violet' tag onClick={() => setSortBy('separator')}>
@@ -92,12 +110,14 @@ const Analizator = ({
                         <Label as='a' color='red' tag onClick={() => setSortBy('invalid')}>
                             Не валідні
                         </Label>
-                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що не увійшли до попередніх класів </p>
+                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що не увійшли до попередніх
+                            класів </p>
                     </div>
                     <div className={'info-row'}/>
                     <div className={'info-row'}>
-                        <h3>Щоб знову побачити це вікно, клікни на  </h3>
-                        <Icon size={'large'} name={'info circle'} color={'teal'} style={{marginLeft: '10px'}}/>
+                        <h3>Щоб знову побачити це вікно, клікни на </h3>
+                        <Image className={'header-image'} style={{width:'25px', marginLeft: '10px'}}
+                               src='https://www.flaticon.com/svg/static/icons/svg/1265/1265907.svg'/>
                     </div>
                 </Modal.Content>
             </Modal>}
@@ -105,10 +125,8 @@ const Analizator = ({
                 <div className={'header'}>
                     <div className={'header-container'}>
                         <Image className={'header-image'}
-                               src='https://www.flaticon.com/svg/static/icons/svg/1265/1265907.svg'/>
+                               src='https://www.flaticon.com/svg/static/icons/svg/1265/1265907.svg' onClick={() => toggleShowInfo()}/>
                         <h2 className={'header-text'}>Ukrainian language analizator</h2>
-                        <Icon name={'info circle'} color={'teal'} style={{cursor: 'pointer'}}
-                              onClick={() => toggleShowInfo()}/>
                     </div>
                     <div className={'header-container'}>
                         <Image className={'header-image'} circular src='https://i.imgur.com/rFncihd.jpg'/>
@@ -122,19 +140,34 @@ const Analizator = ({
                           onInput={e => {
                               const enteredText = e.target.value
                               if (enteredText.length <= 4000) {
-                                  setTokens(analyzeText((enteredText)));
+                                  setTokens(analyzeText(enteredText));
                               }
                               setText(enteredText)
                           }}
                 />
+                {text.length > 4000 &&
+                <p className={'analyze-alert'}>Довжина тексту більше 4000 символів, щоб проаналізувати натисніть
+                    кнопку "Проаналізувати"</p>}
                 <div className={'buttons-container'}>
-                    {text.length > 4000 &&
-                    <p className={'analyze-alert'}>Довжина тексту більше 4000 символів, щоб проаналізувати натисніть
-                        кнопку "Проаналізувати"</p>}
+                    {text.length === 0 &&
+                    <div style={{
+                        color: '#AEB5BF',
+                        alignSelf: 'center',
+                        cursor: 'pointer',
+                        marginRight: '30px'
+                    }} onClick={() => {
+                        setText(mockData);
+                        setTokens(analyzeText(mockData));
+                    }}>Натисніть, щоб вставити тестовий текст</div>
+                    }
                     <Button className={'content-button'} content={'Очистити'}
-                            onClick={() => setText('')}/>
+                            onClick={() => {
+                                setText('');
+                                setTokens([]);
+                            }}/>
                     <Button content={'Проаналізувати'} color='green'
                             onClick={() => setTokens(analyzeText(text))}/>
+
                 </div>
             </div>
             <Divider horizontal>
