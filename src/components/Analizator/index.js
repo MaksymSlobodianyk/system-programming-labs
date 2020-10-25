@@ -1,9 +1,9 @@
 import {connect} from "react-redux";
 import PropTypes from 'prop-types'
 import * as React from "react";
-import {Divider, Header, Icon, Button, Image, TextArea, Loader} from "semantic-ui-react";
+import {Divider, Header, Icon, Button, Image, TextArea, Loader, Label} from "semantic-ui-react";
 import Token from "../Token";
-import {setIsProcessing, setText} from "../../actions";
+import {setIsProcessing, setSortBy, setText, setTokens} from "../../actions";
 import styles from './styles.css'
 import analyzeText from "../../helpers/analyzer";
 
@@ -14,26 +14,26 @@ const Analizator = ({
                         tokens,
                         isProcessing,
                         setText,
-                        setIsProcessing
+                        setTokens,
+                        setSortBy
                     }) => {
 
     const getContent = () => {
         if (isProcessing) {
             return (<div className={'spinner-container'}><Loader active inline>Аналізую...</Loader></div>)
         } else if (tokens.length !== 0) {
+            if (sortBy) {
+                return tokens.filter(token => token.type === sortBy).map(token => (
+                        <Token token={token}/>
+                    )
+                )
+            }
             return tokens.map(token => (
-                    <Token token={token.token} type={token.type}/>
+                    <Token token={token}/>
                 )
             )
         }
         return <p className={'no-items'}>Лексеми відсутні</p>
-    }
-
-    const analyze = () =>{
-        setIsProcessing(true)
-        console.log(text)
-        analyzeText(text)
-        setIsProcessing(false)
     }
 
     return (
@@ -55,11 +55,22 @@ const Analizator = ({
                           style={{minHeight: 400}}
                           value={text}
                           disabled={isProcessing}
-                          onInput={e => setText(e.target.value)}
+                          onInput={e => {
+                              const enteredText = e.target.value
+                              if (enteredText.length <= 4000) {
+                                  setTokens(analyzeText((enteredText)));
+                              }
+                              setText(enteredText)
+                          }}
                 />
                 <div className={'buttons-container'}>
-                    <Button disabled={isProcessing} className={'content-button'} content={'Очистити'} onClick={() => setText('')}/>
-                    <Button disabled={isProcessing} content={'Проаналізувати'} color='green' onClick={() => analyze()}/>
+                    {text.length > 4000 &&
+                    <p className={'analyze-alert'}>Довжина тексту більше 4000 символів, щоб проаналізувати натисніть
+                        кнопку "Проаналізувати"</p>}
+                    <Button disabled={isProcessing} className={'content-button'} content={'Очистити'}
+                            onClick={() => setText('')}/>
+                    <Button disabled={isProcessing} content={'Проаналізувати'} color='green'
+                            onClick={() => setTokens(analyzeText(text))}/>
                 </div>
             </div>
             <Divider horizontal>
@@ -68,6 +79,40 @@ const Analizator = ({
                     Лексеми
                 </Header>
             </Divider>
+            <div className={'tag-container'}>
+                <div className={'sort-tag'} style={sortBy ? {} : {borderBottomStyle: 'solid'}}>
+                    <Label as='a' tag onClick={() => setSortBy(undefined)}>
+                        Всі
+                    </Label>
+                </div>
+                <div className={'sort-tag'} style={sortBy === 'valid' ? {borderBottomStyle: 'solid'} : {}}>
+                    <Label as='a' color='green' tag onClick={() => setSortBy('valid')}>
+                        Валідні
+                    </Label>
+                </div>
+                <div className={'sort-tag'} style={sortBy === 'date' ? {borderBottomStyle: 'solid'} : {}}>
+                    <Label as='a' color='blue' tag onClick={() => setSortBy('date')}>
+                        Дата
+                    </Label></div>
+                <div className={'sort-tag'} style={sortBy === 'email' ? {borderBottomStyle: 'solid'} : {}}>
+                    <Label as='a' color='pink' tag onClick={() => setSortBy('email')}>
+                        E-mail
+                    </Label></div>
+                <div className={'sort-tag'} style={sortBy === 'numeric' ? {borderBottomStyle: 'solid'} : {}}>
+                    <Label as='a' color='orange' tag onClick={() => setSortBy('numeric')}>
+                        Число
+                    </Label></div>
+                <div className={'sort-tag'} style={sortBy === 'separator' ? {borderBottomStyle: 'solid'} : {}}>
+                    <Label as='a' color='violet' tag onClick={() => setSortBy('separator')}>
+                        Роздільник
+                    </Label>
+                </div>
+                <div className={'sort-tag'} style={sortBy === 'invalid' ? {borderBottomStyle: 'solid'} : {}}>
+                    <Label as='a' color='red' tag onClick={() => setSortBy('invalid')}>
+                        Не валідні
+                    </Label>
+                </div>
+            </div>
             <div className={'container'}>
                 {getContent()}
             </div>
@@ -92,7 +137,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     setText: text => dispatch(setText(text)),
-    setIsProcessing: isProcessing => dispatch(setIsProcessing(isProcessing))
+    setIsProcessing: isProcessing => dispatch(setIsProcessing(isProcessing)),
+    setTokens: tokens => dispatch(setTokens(tokens)),
+    setSortBy: sortBy => dispatch(setSortBy(sortBy))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Analizator)

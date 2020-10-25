@@ -3,43 +3,11 @@ import PropTypes from 'prop-types'
 import {Label} from "semantic-ui-react";
 import styles from './styles.css'
 
-const Token = ({token, type,}) => {
-
-    const getColor = () => {
-        switch (type){
-            case 'name':
-                return 'green'
-            case 'numeric':
-                return 'orange'
-            case 'date':
-                return 'blue'
-            case 'email':
-                return 'yellow'
-            case 'tel':
-                return 'pink'
-            default: return 'red'
-        }
-    }
-
-    const getDescription = () => {
-        switch (type){
-            case 'name':
-                return `Складається з символів ['c', 'л', 'о', 'б', 'д', 'я', 'н', 'и', 'к']`
-            case 'numeric':
-                return 'Складється з цифр та крапки - розділювача'
-            case 'date':
-                return 'Дата в форматі dd/mm/yyyy або mm/dd/yyyy'
-            case 'email':
-                return 'Валідна e-mail адреса'
-            case 'tel':
-                return 'Номер телефону у форматі 999-999-99-99'
-            default: return 'Не валідний набір символів'
-        }
-    }
+const Token = ({token}) => {
 
     const getTitle = () => {
-        switch (type){
-            case 'name':
+        switch (token.type) {
+            case 'valid':
                 return 'Валідне'
             case 'numeric':
                 return 'Число'
@@ -49,26 +17,40 @@ const Token = ({token, type,}) => {
                 return 'E-mail'
             case 'tel':
                 return 'Номер телефону'
-            default: return 'Не валідне'
+            case 'separator':
+                return 'Роздільник'
+            default:
+                return 'Не валідне'
+        }
+    }
+    const getSeparatorTitle = () => {
+        const title = token.token
+        if (title === ' ')
+            return '{ Пробіл }'
+        else if (title === '\n')
+            return '{ Перехід на наступний рядок }'
+        else if (title === '\t')
+            return '{ Табуляція }'
+        else {
+            return title
         }
     }
 
     return (
         <div className={'token-container'}>
-            <div style={{display:'flex', alignItems: 'center'}}>
-                <Label as='a' color={getColor()} tag>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+                <Label as='a' color={token.color} tag>
                     {getTitle()}
                 </Label>
-                <p className={'token-title'}>{token}</p>
+                <p className={'token-title'}>{token.type === 'separator' ? getSeparatorTitle() : token.token}</p>
             </div>
-            <p className={'token-description'}>{getDescription()}</p>
+            <p className={'token-description'}>{token.description}</p>
         </div>
     )
 }
 
 Token.propTypes = {
-    token: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired
+    token: PropTypes.object.isRequired,
 }
 
 export default Token

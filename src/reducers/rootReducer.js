@@ -1,4 +1,4 @@
-import {SET_IS_PROCESSING, SET_TEXT, SET_TOKENS} from "../actions";
+import {SET_IS_PROCESSING, SET_SORT_BY, SET_TEXT, SET_TOKENS} from "../actions";
 
 const initialState = {
     isProcessing: false,
@@ -20,7 +20,14 @@ const analyzerReducer = (state = initialState, action) => {
         case SET_TOKENS:
             return {
                 ...state,
-                tokens: action.tokens}
+                isProcessing: false,
+                tokens: action.tokens
+            }
+        case SET_SORT_BY:
+            return {
+                ...state,
+                sortBy: action.sortBy
+            }
         default:
             return state
     }
