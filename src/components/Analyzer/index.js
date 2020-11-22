@@ -1,19 +1,15 @@
 import {connect} from "react-redux";
 import PropTypes from 'prop-types'
 import * as React from "react";
-import {Divider, Header, Icon, Button, Image, TextArea, Modal, Label} from "semantic-ui-react";
+import {Divider, Header, Icon, Button, TextArea, Label} from "semantic-ui-react";
 import Token from "../Token";
-import {toggleShowInfo, setSortBy, setText, setTokens} from "../../actions";
 import analyzeText from "../../helpers/analyzer";
-import styles from "../Container/styles.css"
 
 
-const Analizator = ({
+const Analyzer = ({
                         text,
                         sortBy,
                         tokens,
-                        toggleShowInfo,
-                        showInfo,
                         setText,
                         setTokens,
                         setSortBy
@@ -51,7 +47,7 @@ const Analizator = ({
     return (
         <div>
             <div className={'container'}>
-                <TextArea className={'text-area'}
+                <TextArea className={'analyzer-text-area'}
                           placeholder='Вставте текст українською мовою для аналізу...'
                           style={{minHeight: 400}}
                           value={text}
@@ -139,26 +135,14 @@ const Analizator = ({
     )
 }
 
-Analizator.propTypes = {
-    showInfo: PropTypes.bool.isRequired,
+Analyzer.propTypes = {
     tokens: PropTypes.array.isRequired,
     text: PropTypes.string.isRequired,
-    sortBy: PropTypes.string
+    sortBy: PropTypes.string,
+    setText: PropTypes.func.isRequired,
+    setTokens: PropTypes.func.isRequired,
+    setSortBy: PropTypes.func.isRequired
 }
 
-const mapStateToProps = state => ({
-    state: state,
-    showInfo: state.analyzerReducer.showInfo,
-    tokens: state.analyzerReducer.tokens,
-    text: state.analyzerReducer.text,
-    sortBy: state.analyzerReducer.sortBy,
-})
 
-const mapDispatchToProps = dispatch => ({
-    setText: text => dispatch(setText(text)),
-    toggleShowInfo: () => dispatch(toggleShowInfo()),
-    setTokens: tokens => dispatch(setTokens(tokens)),
-    setSortBy: sortBy => dispatch(setSortBy(sortBy))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Analizator)
+export default Analyzer;

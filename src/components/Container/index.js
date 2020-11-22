@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import * as React from "react";
 import {Tab, Divider, Header, Icon, Button, Image, TextArea, Modal, Label} from "semantic-ui-react";
 import {toggleShowInfo, setSortBy, setText, setTokens} from "../../actions";
-import Analizator from "../Analizator";
+import Analyzer from "../Analyzer";
 import styles from "./styles.css"
+import PolishNotation from "../PolishNotation";
+import AnalyzerModal from "../AnalyzerModal";
 
 
 const Container = ({
@@ -20,87 +22,28 @@ const Container = ({
 
     const panes = [
         {
-            menuItem: 'Аналізатор української мови',
-            render: () => <Tab.Pane attached={false}><Analizator/></Tab.Pane>,
+            menuItem: {key: 'analyzer', icon: 'language', content: 'Аналізатор української мови'},
+            render: () => <Tab.Pane attached={false}><Analyzer
+                text={text}
+                sortBy={sortBy}
+                tokens={tokens}
+                setText={setText}
+                setTokens={setTokens}
+                setSortBy={setSortBy}
+            />
+            </Tab.Pane>,
         },
         {
-            menuItem: 'Польська нотація',
-            render: () => <Tab.Pane attached={false}>Tab 2 Content</Tab.Pane>,
+            menuItem: {key: 'polish', icon: 'sort numeric down', content: 'Польська нотація'},
+            render: () => <Tab.Pane attached={false}><PolishNotation/></Tab.Pane>,
         }
     ]
     return (
         <div>
-            {showInfo &&
-            <Modal
-                basic
-                closeIcon
-                onClose={() => toggleShowInfo()}
-                onOpen={() => toggleShowInfo()}
-                open={showInfo}
-                size='small'
-            >
-                <Header icon>
-                    <h1>Привіт, я аналізатор української мови!</h1>
-                </Header>
-                <Modal.Content>
-                    <h3>Я поділяю текст на такі класи лексем: </h3>
-                    <div className={'info-row'}>
-                        <Label as='a' color='green' tag onClick={() => setSortBy('valid')}>
-                            Валідні
-                        </Label>
-                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що cкладаються з символів ['c',
-                            'л', 'о', 'б',
-                            'д', 'я', 'н', 'и', 'к'] </p>
-                    </div>
-                    <div className={'info-row'}>
-                        <Label as='a' color='blue' tag onClick={() => setSortBy('date')}>
-                            Дата
-                        </Label>
-                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що є датою у форматі
-                            dd/mm/yyyy</p>
-                    </div>
-                    <div className={'info-row'}>
-                        <Label as='a' color='yellow' tag onClick={() => setSortBy('email')}>
-                            E-mail
-                        </Label>
-                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що є валідними адресами
-                            електронних скриньок</p>
-                    </div>
-                    <div className={'info-row'}>
-                        <Label as='a' color='pink' tag onClick={() => setSortBy('numeric')}>
-                            Номер телефону
-                        </Label>
-                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що є номерами телефонів у форматі
-                            999-999-99-99</p>
-                    </div>
-                    <div className={'info-row'}>
-                        <Label as='a' color='orange' tag onClick={() => setSortBy('numeric')}>
-                            Число
-                        </Label>
-                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що є числами типу +123, -123,
-                            123, +12.4, -12.4, 12.4</p>
-                    </div>
-                    <div className={'info-row'}>
-                        <Label as='a' color='violet' tag onClick={() => setSortBy('separator')}>
-                            Роздільник
-                        </Label>
-                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що є роздільниками</p>
-                    </div>
-                    <div className={'info-row'}>
-                        <Label as='a' color='red' tag onClick={() => setSortBy('invalid')}>
-                            Не валідні
-                        </Label>
-                        <p style={{fontSize: '16px', marginLeft: '25px'}}>всі лексеми, що не увійшли до попередніх
-                            класів </p>
-                    </div>
-                    <div className={'info-row'}/>
-                    <div className={'info-row'}>
-                        <h3>Щоб знову побачити це вікно, клікни на </h3>
-                        <Image className={'header-image'} style={{width: '25px', marginLeft: '10px'}}
-                               src='https://www.flaticon.com/svg/static/icons/svg/1265/1265907.svg'/>
-                    </div>
-                </Modal.Content>
-            </Modal>}
+            {showInfo && <AnalyzerModal
+                showInfo={showInfo}
+                toggleShowInfo={toggleShowInfo}
+            />}
             <div className={'tab-container'}>
                 <div className={'header'}>
                     <div className={'header-container'}>
@@ -114,7 +57,7 @@ const Container = ({
                         <h2 className={'header-text'}>Слободяник Максим</h2>
                     </div>
                 </div>
-                <Tab menu={{pointing: true}} panes={panes}/>
+                <Tab className={'tabs'} menu={{pointing: true, size: 'big'}} panes={panes}/>
             </div>
         </div>
     )
