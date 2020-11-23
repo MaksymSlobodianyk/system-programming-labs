@@ -26,7 +26,6 @@ const operationPrior = operation => {
     }
 }
 
-
 const getAllBefore = (stack, keySymbol) => {
     let result = []
     while (_.size(stack) !== 0) {
@@ -58,6 +57,15 @@ const getAllBefore = (stack, keySymbol) => {
     return result;
 }
 
+
+const getAllLess = (stack, op) => {
+    let result = []
+    while (stack && operationPrior(_.last(stack)) >= operationPrior(op)) {
+        result.push(stack.pop());
+    }
+    return result;
+}
+
 const transform = (expression) => {
     const splitedExpression = expression.split(":=")
 
@@ -66,27 +74,49 @@ const transform = (expression) => {
     let stack = [];
     expression = splitedExpression[1]
     steps.push({item: splitedExpression[0], stack: [...stack], output: [splitedExpression[0], ...output]})
-    for (let i = 0; i < expression.length; i++) {
-        if (expression[i].match(/^\d+$/gi)) {
-            output.push(expression[i]);
-            steps.push({item: expression[i], stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
+    while (expression) {
+        let symbol = _.head(expression)
+        expression = expression.substring(1);
 
-        } else if (expression[i].match(/^[\(\),\[\]\*\+\-\\\^]+$/gi)) {
-            const operation = expression[i];
+        if (symbol.match(/^\d+$/gi)) {
+            let lexem = symbol;
+            if (expression) {
+                while (_.head(expression).match(/^\d+$/gi)) {
+                    lexem += _.head(expression)
+                    expression = expression.substring(1);
+                }
+            }
+
+            output.push(lexem);
+            steps.push({item: lexem, stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
+
+        } else if (symbol.match(/^\w+$/gi)) {
+            let lexem = symbol;
+            if (expression) {
+                while (_.head(expression).match(/^\w+$/gi)) {
+                    lexem += _.head(expression)
+                    expression = expression.substring(1);
+                }
+            }
+
+            output.push(lexem);
+            steps.push({item: lexem, stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
+
+        } else if (symbol.match(/^[\(\),\[\]\*\+\-\\\^]$/gi)) {
+
+            const operation = symbol;
             const previousOperation = _.last(stack) || ":=";
 
             if (operation === '(') {
                 const previousSign = _.last(output);
 
                 if (previousSign) {
-                    if (previousSign.match(/^[0-9a-zA-Z]+$/gi) && previousSign !== 'Fn') {
+                    if (previousSign.match(/^[0-9a-zA-Z]+$/g) && previousSign !== 'Fn') {
                         stack.push('Fn')
                         stack.push(2)
                     } else {
                         stack.push('(')
                     }
-                } else {
-                    stack.push('(')
                 }
                 steps.push({item: operation, stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
                 continue;
@@ -94,6 +124,7 @@ const transform = (expression) => {
 
             if (operation === '[') {
                 const previousSign = _.last(output);
+                //output=[output,getAllLess(stack, '[')]
                 if (previousSign) {
                     if (previousSign.match(/^[\da-zA-Z]+$/gi)) {
                         stack.push(operation)
@@ -104,7 +135,6 @@ const transform = (expression) => {
                 } else {
                     stack.push(operation)
                 }
-
                 steps.push({item: operation, stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
                 continue;
             }
@@ -137,20 +167,18 @@ const transform = (expression) => {
 
             if (operationPrior(operation) > operationPrior(previousOperation)) {
                 stack.push(operation);
-                steps.push({item: expression[i], stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
+                steps.push({item: operation, stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
             } else {
-                output.push(stack.pop());
+                output=[output,getAllLess(stack, operation)]
                 stack.push(operation);
-                steps.push({item: expression[i], stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
+                steps.push({item: operation, stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
             }
 
-        } else if (expression[i].match(/^\w+$/gi)) {
-            output.push(expression[i]);
-            steps.push({item: expression[i], stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
         }
 
     }
     steps.push({item: 'end of expression', stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
+
     if (!_.isEmpty(stack)) {
         const stackSize = stack.length;
         for (let i = 0; i < stackSize; i++) {
@@ -159,10 +187,11 @@ const transform = (expression) => {
             steps.push({item: operation, stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
         }
     }
+
     output.unshift(splitedExpression[0])
     output.push(":=")
     steps.push({item: ":=", stack: [...stack], output: [...output]})
-    console.log(({transResult: output, transSteps: steps}))
+
     return ({transResult: output, transSteps: steps})
 }
 
