@@ -77,6 +77,7 @@ const Analyzer = ({
                     <Button className={'content-button'} content={'Очистити'}
                             onClick={() => {
                                 setText('');
+                                setSortBy(undefined)
                                 setTokens([]);
                             }}/>
                     <Button content={'Проаналізувати'} color='green'

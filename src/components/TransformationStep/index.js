@@ -3,10 +3,21 @@ import * as React from "react";
 import {Header, Label, Modal, Image} from "semantic-ui-react";
 
 
-const TransformationStep = ({ }) =>{
+const TransformationStep = (step) => {
     return (
-        <div>
-
+        <div className={'token-container'}>
+            <div>
+                <Label as='a' color="green" tag>
+                    {step.step.item}
+                </Label>
+            </div>
+            <div> Stack: [
+                {step.step.stack.join(" , ")}
+                ]
+            </div>
+            <div>
+                {step.step.output}
+            </div>
         </div>
     )
 }

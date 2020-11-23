@@ -1,25 +1,29 @@
-import {connect} from "react-redux";
 import PropTypes from 'prop-types'
 import * as React from "react";
 import {Tab, Divider, Header, Icon, Button, Image, TextArea, Modal, Label} from "semantic-ui-react";
-import {toggleShowInfo, setSortBy, setText, setTokens} from "../../actions";
+import TransformationStep from "../TransformationStep";
 
-const Transformation = ({
-                       text,
-                       sortBy,
-                       tokens,
-                       toggleShowInfo,
-                       showInfo,
-                       setText,
-                       setTokens,
-                       setSortBy
-                   }) => {
+const Transformation = ({result = [], steps = []}) => {
 
     return (
         <div className={'container'}>
+            {(steps.length !== 0) &&
             <div>
-                <h2>Результат: {'AB+c*^4:='}</h2>
-            </div>
+                <div>
+                    <h2>Результат: {result}</h2>
+                </div>
+                {steps.map(step => (
+                    <div>
+                       <TransformationStep step={step}/>
+                    </div>
+                ))}
+            </div>}
+
+            {(steps.length === 0) && (
+                <div>
+                    <p className={'no-items'}>Для отримання польської нотації введіть вираз для переводу</p>
+                </div>
+            )}
         </div>
     )
 }
@@ -31,19 +35,4 @@ Transformation.propTypes = {
     sortBy: PropTypes.string
 }
 
-const mapStateToProps = state => ({
-    state: state,
-    showInfo: state.analyzerReducer.showInfo,
-    tokens: state.analyzerReducer.tokens,
-    text: state.analyzerReducer.text,
-    sortBy: state.analyzerReducer.sortBy,
-})
-
-const mapDispatchToProps = dispatch => ({
-    setText: text => dispatch(setText(text)),
-    toggleShowInfo: () => dispatch(toggleShowInfo()),
-    setTokens: tokens => dispatch(setTokens(tokens)),
-    setSortBy: sortBy => dispatch(setSortBy(sortBy))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Transformation)
+export default Transformation

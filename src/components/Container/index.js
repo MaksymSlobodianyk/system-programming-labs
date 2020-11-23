@@ -2,11 +2,17 @@ import {connect} from "react-redux";
 import PropTypes from 'prop-types'
 import * as React from "react";
 import {Tab, Divider, Header, Icon, Button, Image, TextArea, Modal, Label} from "semantic-ui-react";
-import {toggleShowInfo, setSortBy, setText, setTokens} from "../../actions";
+import {toggleShowInfo, setSortBy, setText, setTokens} from "../../actions/analyzerActions";
 import Analyzer from "../Analyzer";
 import styles from "./styles.css"
 import PolishNotation from "../PolishNotation";
 import AnalyzerModal from "../AnalyzerModal";
+import {
+    setComputedResult, setComputingSteps,
+    setExpression,
+    setExpressionIsCorrect,
+    setPolishNotationResult, setPolishNotationSteps
+} from "../../actions/polishActions";
 
 
 const Container = ({
@@ -17,7 +23,19 @@ const Container = ({
                        showInfo,
                        setText,
                        setTokens,
-                       setSortBy
+                       setSortBy,
+                       expression,
+                       setExpression,
+                       expressionIsCorrect,
+                       setExpressionIsCorrect,
+                       setPolishNotationResult,
+                       setComputedResult,
+                       computingResult,
+                       polishNotationResult,
+                       polishNotationSteps,
+                       computingSteps,
+                       setComputingSteps,
+                       setPolishNotationSteps
                    }) => {
 
     const panes = [
@@ -35,7 +53,21 @@ const Container = ({
         },
         {
             menuItem: {key: 'polish', icon: 'sort numeric down', content: 'Польська нотація'},
-            render: () => <Tab.Pane attached={false}><PolishNotation/></Tab.Pane>,
+            render: () => <Tab.Pane attached={false}><PolishNotation
+                expression={expression}
+                setExpression={setExpression}
+                expressionIsCorrect={expressionIsCorrect}
+                setExpressionIsCorrect={setExpressionIsCorrect}
+                setPolishNotationResult={setPolishNotationResult}
+                setComputedResult={setComputedResult}
+                computingResult={computingResult}
+                polishNotationResult={polishNotationResult}
+                polishNotationSteps={polishNotationSteps}
+                computingSteps={computingSteps}
+                setComputingSteps={setComputingSteps}
+                setPolishNotationSteps={setPolishNotationSteps}
+            />
+            </Tab.Pane>,
         }
     ]
     return (
@@ -76,13 +108,25 @@ const mapStateToProps = state => ({
     tokens: state.analyzerReducer.tokens,
     text: state.analyzerReducer.text,
     sortBy: state.analyzerReducer.sortBy,
+    expression: state.polishReducer.expression,
+    expressionIsCorrect: state.polishReducer.isCorrect,
+    polishNotationResult: state.polishReducer.polishNotationResult,
+    computingResult: state.polishReducer.computingResult,
+    computingSteps: state.polishReducer.computingSteps,
+    polishNotationSteps: state.polishReducer.polishNotationSteps,
 })
 
 const mapDispatchToProps = dispatch => ({
     setText: text => dispatch(setText(text)),
     toggleShowInfo: () => dispatch(toggleShowInfo()),
     setTokens: tokens => dispatch(setTokens(tokens)),
-    setSortBy: sortBy => dispatch(setSortBy(sortBy))
+    setSortBy: sortBy => dispatch(setSortBy(sortBy)),
+    setExpressionIsCorrect: isCorrect => dispatch(setExpressionIsCorrect(isCorrect)),
+    setComputedResult: computingResult => dispatch(setComputedResult(computingResult)),
+    setPolishNotationResult: polishNotationResult => dispatch(setPolishNotationResult(polishNotationResult)),
+    setExpression: expresion => dispatch(setExpression(expresion)),
+    setComputingSteps: steps => dispatch(setComputingSteps(steps)),
+    setPolishNotationSteps: steps => dispatch(setPolishNotationSteps(steps))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Container)

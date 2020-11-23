@@ -1,4 +1,4 @@
-import {TOGGLE_SHOW_INFO, SET_SORT_BY, SET_TEXT, SET_TOKENS} from "../actions";
+import {TOGGLE_SHOW_INFO, SET_SORT_BY, SET_TEXT, SET_TOKENS} from "../actions/analyzerActions";
 
 const initialState = {
     showInfo: true,
