@@ -9,8 +9,9 @@ const Transformation = ({result = [], steps = []}) => {
         <div className={'container'}>
             {(steps.length !== 0) &&
             <div>
-                <div>
-                    <h2>Результат: {result}</h2>
+                <div style={{display: "flex",justifyContent: "flex-start", marginBottom:"50px"}}>
+                    <p style={{fontSize: "20px", fontWeight:"700"}}>Результат:</p>
+                    <p style={{fontSize: "20px",marginLeft: "20px"}}>{result}</p>
                 </div>
                 {steps.map(step => (
                     <div>

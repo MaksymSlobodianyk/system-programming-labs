@@ -11,11 +11,11 @@ const TransformationStep = (step) => {
                     {step.step.item}
                 </Label>
             </div>
-            <div> Stack: [
+            <div className={'token-title'}> Stack: [
                 {step.step.stack.join(" , ")}
                 ]
             </div>
-            <div>
+            <div className={'token-title'}>
                 {step.step.output}
             </div>
         </div>
