@@ -1,5 +1,3 @@
-import {toast} from "react-toastify";
-
 const _ = require('lodash');
 const operationPrior = operation => {
 
@@ -124,7 +122,6 @@ const transform = (expression) => {
 
             if (operation === '[') {
                 const previousSign = _.last(output);
-                //output=[output,getAllLess(stack, '[')]
                 if (previousSign) {
                     if (previousSign.match(/^[\da-zA-Z]+$/gi)) {
                         stack.push(operation)
@@ -169,7 +166,7 @@ const transform = (expression) => {
                 stack.push(operation);
                 steps.push({item: operation, stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
             } else {
-                output=[output,getAllLess(stack, operation)]
+                output = [...output, ...getAllLess(stack, operation)]
                 stack.push(operation);
                 steps.push({item: operation, stack: [":=", ...stack], output: [splitedExpression[0], ...output]})
             }
@@ -191,11 +188,58 @@ const transform = (expression) => {
     output.unshift(splitedExpression[0])
     output.push(":=")
     steps.push({item: ":=", stack: [...stack], output: [...output]})
-
+    console.log(output)
     return ({transResult: output, transSteps: steps})
+}
+const perform = (stack,steps, op) => {
+    switch (op) {
+        case "+":
+            const a = parseFloat(stack.pop());
+            const b =  parseFloat(stack.pop());
+            stack.push(b + a);
+            steps.push({item: "+", stack: [...stack], output: `${a} + ${b}`})
+            return;
+        case "-":
+            const c =  parseFloat(stack.pop());
+            const d =  parseFloat(stack.pop());
+            stack.push(d - c);
+            steps.push({item: "-", stack: [...stack], output: `${d} - ${c}`})
+            return;
+        case "/":
+            const e =  parseFloat(stack.pop());
+            const f =  parseFloat(stack.pop());
+            stack.push(f / e);
+            steps.push({item: "/", stack: [...stack], output: `${f} / ${e}`})
+            return;
+        case "*":
+            const i =  parseFloat(stack.pop());
+            const j =  parseFloat(stack.pop());
+            stack.push(i * j);
+            steps.push({item: "*", stack: [...stack], output: `${i} * ${j}`})
+            return;
+        case "Fn":
+            stack.pop()
+            steps.pop()
+            const x =  parseFloat(stack.pop());
+            stack.push(Math.sin(x));
+            steps.push({item: "sin", stack: [...stack], output: `sin(${x})`})
+            return;
+    }
 }
 
 const compute = (poliz) => {
-    return ({compResult: 'mock compute', compSteps: []})
+    let stack = [];
+    let steps = [];
+    poliz = poliz.slice(1, poliz.length - 1)
+    poliz.forEach(elem => {
+        if ((""+elem).match(/^\d+$/gi)) {
+            stack.push(elem)
+            steps.push({item: elem, stack: [...stack], operation: ""})
+        } else {
+            perform(stack,steps, elem)
+        }
+    })
+    console.log(stack,steps)
+    return ({compResult: stack[0], compSteps: steps})
 }
 export {transform, compute}

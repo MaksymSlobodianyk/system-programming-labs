@@ -32,7 +32,7 @@ export const setComputedResult = computingResult => ({
 })
 
 export const setComputingSteps= steps => ({
-    type: 'SET_COMPUTED_RESULT',
+    type: 'SET_COMPUTING_STEPS',
     steps
 })
 

@@ -2,7 +2,6 @@ import PropTypes from 'prop-types'
 import * as React from "react";
 import {Input, Divider, Header, Icon, Button, Tab} from "semantic-ui-react";
 import Transformation from "../Transformation";
-import Computing from "../Computing";
 import {compute, transform} from "../../helpers/polish";
 
 const PolishNotation = ({
@@ -23,20 +22,24 @@ const PolishNotation = ({
     const mockData = `A:=((15-2)*3)*(sin(3+5,6)+(4-4))+A[i,j+3]`
 
     const checkIfCorrect = text => {
-        setExpressionIsCorrect(!text || text.match(/^[\d\w:=,\(\)\[\]\*\+\-\\\^]+$/gi));
+        setExpressionIsCorrect(!text || text.match(/^(\w+:=)[\d\w:=,\(\)\[\]\*\+\-\/\^]+$/gi));
     }
     const process = () => {
         const {transResult, transSteps} = transform(expression);
         setPolishNotationResult(transResult)
         setPolishNotationSteps(transSteps)
-        if (expression.match(/^((sin)|[\d\(\)\[\]\*\+\-\\\^])+$/gi)) {
-            const {compResult, compSteps} = compute();
+      if (expression.match(/^(\w+:=)((sin)|[\d\(\)\[\]\*\+\-\/\^])+$/gi)) {
+            const {compResult, compSteps} = compute(transResult);
             setComputedResult(compResult)
+        console.log(computingSteps)
             setComputingSteps(compSteps)
-        } else {
-            setComputedResult('')
-            setComputingSteps([])
-        }
+        console.log(computingResult)
+
+
+               } else {
+                    setComputedResult('')
+                    setComputingSteps([])
+                }
     }
 
     const panes = [
@@ -46,7 +49,7 @@ const PolishNotation = ({
         },
         {
             menuItem: {key: 'polish', icon: 'sliders horizontal', content: 'Обчислення виразу'},
-            render: () => <Tab.Pane attached={false}><Computing result={computingResult}/></Tab.Pane>,
+            render: () => <Tab.Pane attached={false}><Transformation result={computingResult} steps={computingSteps}/></Tab.Pane>,
         }
     ]
 

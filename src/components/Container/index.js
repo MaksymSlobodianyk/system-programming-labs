@@ -125,8 +125,8 @@ const mapDispatchToProps = dispatch => ({
     setComputedResult: computingResult => dispatch(setComputedResult(computingResult)),
     setPolishNotationResult: polishNotationResult => dispatch(setPolishNotationResult(polishNotationResult)),
     setExpression: expresion => dispatch(setExpression(expresion)),
-    setComputingSteps: steps => dispatch(setComputingSteps(steps)),
-    setPolishNotationSteps: steps => dispatch(setPolishNotationSteps(steps))
+    setComputingSteps: computingSteps => dispatch(setComputingSteps(computingSteps)),
+    setPolishNotationSteps: computingResult => dispatch(setPolishNotationSteps(computingResult))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Container)
